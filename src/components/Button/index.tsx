@@ -1,56 +1,103 @@
-// Componente Button reutilizável
+import React from "react";
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+  ActivityIndicator,
+} from "react-native";
+import { COLORS, SPACING, TYPOGRAPHY, RADIUS } from "../../styles/theme";
 
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import { colors } from '../../styles/colors';
+type Variant = "primary" | "outline" | "ghost";
 
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary';
+  variant?: Variant;
+  fullWidth?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
+  style?: ViewStyle;
 }
 
-export function Button({ title, onPress, variant = 'primary' }: ButtonProps) {
-  const buttonStyle: ViewStyle[] = [
-    styles.button,
-    variant === 'primary' ? styles.buttonPrimary : styles.buttonSecondary,
-  ];
-
-  const textStyle: TextStyle[] = [
-    styles.text,
-    variant === 'primary' ? styles.textPrimary : styles.textSecondary,
-  ];
-
+export function Button({
+  title,
+  onPress,
+  variant = "primary",
+  fullWidth = false,
+  disabled = false,
+  loading = false,
+  style,
+}: ButtonProps) {
   return (
-    <TouchableOpacity style={buttonStyle} onPress={onPress} activeOpacity={0.7}>
-      <Text style={textStyle}>{title}</Text>
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={disabled || loading}
+      style={[
+        styles.base,
+        styles[variant],
+        fullWidth && styles.fullWidth,
+        (disabled || loading) && styles.disabled,
+        style,
+      ]}
+      activeOpacity={0.75}
+    >
+      {loading ? (
+        <ActivityIndicator
+          color={variant === "primary" ? COLORS.white : COLORS.primary}
+        />
+      ) : (
+        <Text
+          style={[
+            styles.text,
+            styles[`text_${variant}` as keyof typeof styles] as TextStyle,
+          ]}
+        >
+          {title}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  button: {
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 8,
+  base: {
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.xxl,
+    borderRadius: RADIUS.sm,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  buttonPrimary: {
-    backgroundColor: colors.primary,
+  primary: {
+    backgroundColor: COLORS.primary,
   },
-  buttonSecondary: {
-    backgroundColor: colors.secondary,
+  outline: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+  },
+  ghost: {
+    backgroundColor: "transparent",
+  },
+  fullWidth: {
+    width: "100%",
+  },
+  disabled: {
+    opacity: 0.4,
   },
   text: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: TYPOGRAPHY.fontSize.sm,
+    letterSpacing: TYPOGRAPHY.letterSpacing.wider,
+    fontWeight: "600",
   },
-  textPrimary: {
-    color: colors.white,
+  text_primary: {
+    color: COLORS.white,
   },
-  textSecondary: {
-    color: colors.white,
+  text_outline: {
+    color: COLORS.primary,
+  },
+  text_ghost: {
+    color: COLORS.primary,
   },
 });

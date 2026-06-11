@@ -1,34 +1,45 @@
-// Componente Header reutilizável
-
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { colors } from '../../styles/colors';
+import React from "react";
+import { View, Text, StyleSheet, StatusBar } from "react-native";
+import { COLORS, SPACING, TYPOGRAPHY } from "../../styles/theme";
 
 interface HeaderProps {
   title: string;
+  subtitle?: string;
 }
 
-export function Header({ title }: HeaderProps) {
+export function Header({ title, subtitle }: HeaderProps) {
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
       <Text style={styles.title}>{title}</Text>
+      {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+      <View style={styles.divider} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 16,
-    paddingBottom: 16,
-    paddingHorizontal: 16,
-    backgroundColor: colors.primary,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.primary,
+    backgroundColor: COLORS.background,
+    paddingTop: SPACING.xxl,
+    paddingHorizontal: SPACING.xl,
+    paddingBottom: SPACING.lg,
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.white,
-    textAlign: 'center',
+    fontSize: TYPOGRAPHY.fontSize.lg,
+    fontWeight: "700",
+    letterSpacing: TYPOGRAPHY.letterSpacing.wider,
+    color: COLORS.text,
+  },
+  subtitle: {
+    fontSize: TYPOGRAPHY.fontSize.xs,
+    color: COLORS.textSecondary,
+    letterSpacing: TYPOGRAPHY.letterSpacing.wide,
+    marginTop: SPACING.xs,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: COLORS.border,
+    marginTop: SPACING.lg,
   },
 });
